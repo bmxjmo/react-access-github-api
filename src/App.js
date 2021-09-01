@@ -5,9 +5,13 @@ import { useState } from 'react';
 function App() {
 
   const [search, setSearch] = useState('');
+  const [userData, setUserData] = useState();
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    fetch(`https://api.github.com/users/${search}`)
+    .then(response => response.json())
+    .then(userResponse => setUserData(userResponse));
   }
 
   const handleChange = (event) => {
@@ -38,23 +42,38 @@ function App() {
       </form>
       <div className="py-5">
           <div>
-            <img
-              src={githubimage}
-              className="responsive rounded-circle"
-              alt=""
-              height="200px"
-            />
-            <h1 className="pt-5">
-              <a href="#!" className="text-decoration-none" target="_new">
-                lorem ipsum
-              </a>
-            </h1>
-            <h3>lorem ipsum</h3>
-            <p>
-              <a href="#!" className="text-decoration-none" target="_new">
-                lorem ipsum
-              </a>
-            </p>
+            
+            {!userData && (
+              <img
+                src={githubimage}
+                className="responsive rounded-circle"
+                alt=""
+                height="200px"
+              />
+            )}
+
+            {userData && (
+              <>
+                <img
+                  src={userData.avatar_url}
+                  className="responsive rounded-circle"
+                  alt=""
+                  height="200px"
+                />
+                <h1 className="pt-5">
+                  <a href={userData.html_url} className="text-decoration-none" target="_new">
+                    {userData.name}
+                  </a>
+                </h1>
+                <h3>{userData.location}</h3>
+                <p>
+                  <a href={userData.blog} className="text-decoration-none" target="_new">
+                  {userData.blog}
+                  </a>
+                </p>
+              </>
+            )}
+
           </div>
       </div>
     </div>
